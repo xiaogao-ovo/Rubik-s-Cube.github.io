@@ -1,168 +1,365 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>魔方游戏</title>
-    <style>
-      /* 样式设置 */
-      .game-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
 
-      .cube-container {
-        width: 300px;
-        height: 300px;
-        margin: 0 auto;
-        perspective: 600px;
-      }
+<html lang="en">
 
-      .cube-box {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform-style: preserve-3d;
-        transition: transform .5s ease;
-      }
+<head>
 
-      .cube-face {
-        position: absolute;
-        width: calc(100% / 3);
-        height: calc(100% / 3);
-        text-align: center;
-        font-size: 48px;
-        font-weight: bold;
-        user-select: none;
-      }
+<meta charset="UTF-8" />
 
-      .cube-face.front  { transform: translateZ(150px); }
-      .cube-face.back   { transform: rotateY(180deg) translateZ(150px); }
-      .cube-face.right  { transform: rotateY(90deg)  translateZ(150px); }
-      .cube-face.left   { transform: rotateY(-90deg) translateZ(150px); }
-      .cube-face.top    { transform: rotateX(90deg)  translateZ(150px); }
-      .cube-face.bottom { transform: rotateX(-90deg) translateZ(150px); }
-    </style>
-  </head>
-  <body>
-    <div class="game-container">
-      <div class="cube-container">
-        <div class="cube-box"></div>
-      </div>
-    </div>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script>
-      // 初始化魔方状态
-      var cube = [
-        ['R', 'R', 'W'],
-        ['Y', 'O', 'W'],
-        ['Y', 'B', 'B']
-      ];
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-      // 魔方颜色表
-      var colors = {
-        R: '#f00', // 红色
-        G: '#0f0', // 绿色
-        B: '#00f', // 蓝色
-        Y: '#ff0', // 黄色
-        O: '#f80', // 橙色
-        W: '#fff'  // 白色
-      };
+<title>Document</title>
 
-      // 根据魔方数据渲染页面
-      function renderCube() {
-        var cubeBox = document.querySelector('.cube-box');
-        cubeBox.innerHTML = '';
-        for (var i = 0; i < 6; i++) {
-          var face = document.createElement('div');
-          face.classList.add('cube-face');
-          face.classList.add(getFaceClassName(i));
-          face.style.backgroundColor = colors[getFaceColor(i)];
-          face.innerHTML = getFaceText(i);
-          cubeBox.appendChild(face);
-        }
-      }
+<style>
 
-      // 获取面的类名
-      function getFaceClassName(faceIndex) {
-        if (faceIndex === 0) return 'front';
-        if (faceIndex === 1) return 'back';
-        if (faceIndex === 2) return 'right';
-        if (faceIndex === 3) return 'left';
-        if (faceIndex === 4) return 'top';
-        if (faceIndex === 5) return 'bottom';
-      }
+.box {
 
-      // 获取面的颜色
-      function getFaceColor(faceIndex) {
-        var row, col;
-        if (faceIndex === 0) { row = 1; col = 1; } // 前
-        if (faceIndex === 1) { row = 1; col = 1; } // 后
-        if (faceIndex === 2) { row = 1; col = 2; } // 右
-        if (faceIndex === 3) { row = 1; col = 0; } // 左
-        if (faceIndex === 4) { row = 0; col = 1; } // 上
-        if (faceIndex === 5) { row = 2; col = 1; } // 下
-        return cube[row][col];
-      }
+width: 300px;
 
-      // 获取面的文本
-      function getFaceText(faceIndex) {
-        var row, col;
-        if (faceIndex === 0) { row = 1; col = 1; } // 前
-        if (faceIndex === 1) { row = 1; col = 1; } // 后
-        if (faceIndex === 2) { row = 1; col = 2; } // 右
-        if (faceIndex === 3) { row = 1; col = 0; } // 左
-        if (faceIndex === 4) { row = 0; col = 1; } // 上
-        if (faceIndex === 5) { row = 2; col = 1; } // 下
-        return cube[row][col];
-      }
+height: 300px;
 
-      // 初始化页面
-      renderCube();
+margin: 150px auto;
 
-      // 点击魔方旋转
-      var cubeBox = document.querySelector('.cube-box');
-      var start_x, start_y; // 点击起始位置
-      var rotate_x = 0, rotate_y = 0; // 旋转角度
-      cubeBox.addEventListener('mousedown', function(e) {
-        start_x = e.clientX;
-        start_y = e.clientY;
-      });
-      cubeBox.addEventListener('mouseup', function(e) {
-        var end_x = e.clientX;
-        var end_y = e.clientY;
-        var delta_x = end_x - start_x;
-        var delta_y = end_y - start_y;
-        if (Math.abs(delta_x) < 5 && Math.abs(delta_y) < 5) return; // 防止误触
-        var direction;
-        if (Math.abs(delta_x) > Math.abs(delta_y)) {
-          direction = delta_x > 0 ? 'right' : 'left';
-        } else {
-          direction = delta_y > 0 ? 'down' : 'up';
-        }
-        rotateCube(direction);
-      });
+position: relative;
 
-      // 旋转魔方
-      function rotateCube(direction) {
-        switch (direction) {
-          case 'right':
-            rotate_y += 90;
-            break;
-          case 'left':
-            rotate_y -= 90;
-            break;
-          case 'up':
-            rotate_x += 90;
-            break;
-          case 'down':
-            rotate_x -= 90;
-            break;
-        }
-        var cubeBox = document.querySelector('.cube-box');
-        cubeBox.style.transform = 'rotateX(' + rotate_x + 'deg) rotateY(' + rotate_y + 'deg)';
-      }
-    </script>
-  </body>
+transform-style: preserve-3d;
+
+animation: rotate 10s linear infinite alternate;
+
+}
+
+.before,
+
+.back,
+
+.top,
+
+.bottom,
+
+.left,
+
+.right {
+
+width: 300px;
+
+height: 300px;
+
+position: absolute;
+
+}
+
+.before {
+
+transform: translateZ(150px);
+
+}
+
+.back {
+
+/* transform: rotateY(180deg) translateZ(150px); */
+
+transform: translateZ(-150px);
+
+}
+
+.top {
+
+transform: rotateX(90deg) translateZ(150px);
+
+}
+
+.bottom {
+
+transform: rotateX(-90deg) translateZ(150px);
+
+}
+
+.left {
+
+transform: rotateY(-90deg) translateZ(150px);
+
+}
+
+.right {
+
+transform: rotateY(90deg) translateZ(150px);
+
+}
+
+.before ul li {
+
+background-color: green;
+
+}
+
+.back ul li {
+
+background-color: red;
+
+}
+
+.top ul li {
+
+background-color: pink;
+
+}
+
+.bottom ul li {
+
+background-color: blue;
+
+}
+
+.left ul li {
+
+background-color: yellow;
+
+}
+
+.right ul li {
+
+background-color: wheat;
+
+}
+
+ul {
+
+margin: 0;
+
+padding: 0;
+
+list-style: none;
+
+}
+
+li {
+
+margin: 5px;
+
+border-radius: 20px;
+
+font-size: 50px;
+
+width: 90px;
+
+height: 90px;
+
+float: left;
+
+text-align: center;
+
+line-height: 90px;
+
+}
+
+@keyframes rotate {
+
+0% {
+
+transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+
+}
+
+20%{
+
+transform: rotateY(60deg) rotateX(60deg) rotateZ(60deg);
+
+}
+
+40% {
+
+transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+
+}
+
+60%{
+
+transform: rotateY(-60deg) rotateX(-60deg) rotateZ(-60deg);
+
+}
+
+80% {
+
+transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+
+}
+
+100%{
+
+transform: rotateY(60deg) rotateX(60deg) rotateZ(60deg);
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="before">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+<div class="back">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+<div class="top">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+<div class="bottom">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+<div class="left">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+<div class="right">
+
+<ul>
+
+<li>1</li>
+
+<li>2</li>
+
+<li>3</li>
+
+<li>4</li>
+
+<li>5</li>
+
+<li>6</li>
+
+<li>7</li>
+
+<li>8</li>
+
+<li>9</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</body>
+
 </html>
